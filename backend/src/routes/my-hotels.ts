@@ -13,7 +13,8 @@ const upload = multer({
     limits:{
         fileSize: 5 * 1024 * 1024 //5MB
     }
-})
+});
+
 // api/my-hotels
 router.post('/', VerifyToken, [
     body('name').notEmpty().withMessage('Name is required'),
@@ -55,4 +56,14 @@ router.post('/', VerifyToken, [
         res.status(500).json({message: 'Something went wrong'});
     }
 });
+// get request
+router.get('/', VerifyToken, async (req: Request, res: Response) => {
+    try {
+        const hotels = await Hotel.find({userId: req.userId});
+        res.json(hotels);
+    } catch (error) {
+        res.status(500).json({message: "Error fetching hotels"});
+    }
+})
+
 export default router
