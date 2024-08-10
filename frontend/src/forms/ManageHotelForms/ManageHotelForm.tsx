@@ -4,6 +4,8 @@ import { TypeSection } from "./TypeSection";
 import { FacilitiesSection } from "./FacilitiesSection";
 import { GuestSection } from "./GuestsSection";
 import { ImageSection } from "./ImageSection";
+import { HotelType } from "../../shared/types";
+import { useEffect } from "react";
 
 export type HotelFormData = {
   name: string;
@@ -14,6 +16,7 @@ export type HotelFormData = {
   pricePerNight: number;
   starRating: number;
   facilities: string[];
+  imageUrls: string[];
   imageFiles: FileList;
   adultCount: number;
   childCount: number;
@@ -21,12 +24,19 @@ export type HotelFormData = {
 type Props = {
   onSave: (hotelFormData: FormData) => void;
   isLoading: boolean;
+  hotel?: HotelType;
 };
-export const ManageHotelForm = ({ onSave, isLoading }: Props) => {
+export const ManageHotelForm = ({ hotel, onSave, isLoading }: Props) => {
   const formMethods = useForm<HotelFormData>();
-  const { handleSubmit } = formMethods;
+  const { handleSubmit, reset } = formMethods;
+  useEffect(() => {
+    reset(hotel);
+  }, [hotel, reset]);
   const onSubmit = handleSubmit((formDataJson: HotelFormData) => {
     const formData = new FormData();
+    if (hotel) {
+      formData.append("hotelId", hotel._id);
+    }
     formData.append("name", formDataJson.name);
     formData.append("city", formDataJson.city);
     formData.append("country", formDataJson.country);
@@ -39,6 +49,12 @@ export const ManageHotelForm = ({ onSave, isLoading }: Props) => {
     formDataJson.facilities.forEach((facility, index) => {
       formData.append(`facilities[${index}]`, facility);
     });
+    // update image
+    if (formDataJson.imageUrls) {
+      formDataJson.imageUrls.forEach((url, index) => {
+        formData.append(`imageUrls[${index}]`, url);
+      });
+    }
     Array.from(formDataJson.imageFiles).forEach((imageFile) => {
       formData.append(`imageFiles`, imageFile);
     });
@@ -58,7 +74,7 @@ export const ManageHotelForm = ({ onSave, isLoading }: Props) => {
             type="submit"
             className="bg-blue-600 text-white p-2 font-bold hover:bg-blue-500 text-xl disabled:bg-gray-500"
           >
-            {isLoading?"Saving":"Save"}
+            {isLoading ? "Saving" : "Save"}
           </button>
         </span>
       </form>
