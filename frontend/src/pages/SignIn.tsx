@@ -2,7 +2,7 @@ import { useForm } from "react-hook-form";
 import { useMutation, useQueryClient } from "react-query";
 import * as apiClient from "../api-client";
 import { useAppContext } from "../contexts/AppContext";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 export type SignInFormData = {
   email: string;
   password: string;
@@ -11,6 +11,7 @@ export const SignIn = () => {
   const queryClient = useQueryClient();
   const navigate = useNavigate();
   const { showToast } = useAppContext();
+  const location = useLocation();
   const {
     register,
     formState: { errors },
@@ -20,7 +21,7 @@ export const SignIn = () => {
     onSuccess: async () => {
       showToast({ message: "Log in successful!", type: "SUCCESS" });
       queryClient.invalidateQueries("validateToken");
-      navigate("/");
+      navigate(location.state?.from?.pathname || "/");
     },
     onError: (error: Error) => {
       showToast({ message: error.message, type: "ERROR" });
@@ -63,7 +64,10 @@ export const SignIn = () => {
       </label>
       <span className="items-center flex justify-between">
         <span className="text-sm">
-          Not Registered? <Link className="underline" to={"/register"}>Create An Account</Link>
+          Not Registered?{" "}
+          <Link className="underline" to={"/register"}>
+            Create An Account
+          </Link>
         </span>
         <button
           type="submit"
