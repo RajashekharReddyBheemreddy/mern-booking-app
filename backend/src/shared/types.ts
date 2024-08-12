@@ -14,6 +14,7 @@ export type HotelType = {
     lastUpdated: Date;
     pricePerNight:number;
 };
+
 export type HotelSearchResponse = {
     data: HotelType[];
     pagination:{
