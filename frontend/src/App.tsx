@@ -10,13 +10,28 @@ import { Search } from "./pages/Search";
 import { Detail } from "./pages/Detail";
 import { Booking } from "./pages/Booking";
 import { MyBookings } from "./pages/MyBookings";
+import { Home } from "./pages/Home";
 
 export const App = () => {
   const { isLoggedin } = useAppContext();
   return (
     <Routes>
-      <Route path="/" element={<Layout>HomePage</Layout>} />
-      <Route path="/" element={<Layout>search</Layout>} />
+      <Route
+        path="/"
+        element={
+          <Layout>
+            <Home />
+          </Layout>
+        }
+      />
+      <Route
+        path="/"
+        element={
+          <Layout>
+            <Search />
+          </Layout>
+        }
+      />
       <Route
         path="/register"
         element={
